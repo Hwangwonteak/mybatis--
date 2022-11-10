@@ -1,5 +1,7 @@
 package com.hwt.freeboard01.controller;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.hwt.freeboard01.dao.mapper.IDao;
+import com.hwt.freeboard01.dto.FreeBoardDto;
 import com.hwt.freeboard01.dto.MemberDto;
 
 @Controller
@@ -156,8 +159,11 @@ public class FBoardController {
 		
 		return "logout";
 	}
-	
-	
-	
-	
+	@RequestMapping(value = "list")
+	public String list( Model model) {
+		IDao dao = sqlSession.getMapper(IDao.class);
+		ArrayList<FreeBoardDto> fbdto = dao.listDao();
+		model.addAttribute("list",fbdto);
+			return "list";
+	}
 }
