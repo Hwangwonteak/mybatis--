@@ -11,7 +11,7 @@
 		int checkId = Integer.parseInt(request.getAttribute("checkIdFlag").toString());
 		int checkPw = Integer.parseInt(request.getAttribute("checkPwFlag").toString());
 		if(checkId == 0 ){
-			
+	
 	
 	%>
 		<script language="javascript">
@@ -34,6 +34,8 @@
 		<h2>${mid}님 로그인.</h2>	
 		<h2>회원이름: ${mname}님 </h2>
 		<a href="writeForm">글쓰기</a><br><br>
-		<a href="logout">로그아웃</a>	
+		<a href="logout">로그아웃</a><br><br>
+		<a href="member_list?mid=${mid }">멤버리스트</a>	
+		
 </body>
 </html>

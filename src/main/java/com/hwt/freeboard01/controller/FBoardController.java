@@ -57,7 +57,7 @@ public class FBoardController {
 		return "checkId";
 	}
 	
-	@RequestMapping(value = "login")
+	@RequestMapping(value = "/")
 	public String login() {
 		
 		return "login";
@@ -86,9 +86,10 @@ public class FBoardController {
 		  
 		  MemberDto dto =dao.memberInfoDao(mid);
 		  String mname = dto.getMname();
+		  String imid = dto.getMid(); 
 		  
 		  model.addAttribute("mname",mname);
-		  
+		  model.addAttribute("mid", imid);
 	  }else {
 		  model.addAttribute("mname","guest");
 	  }
@@ -159,11 +160,109 @@ public class FBoardController {
 		
 		return "logout";
 	}
-	@RequestMapping(value = "list")
-	public String list( Model model) {
+	
+	@RequestMapping(value = "member_list")
+	public String member_list(HttpServletRequest request,Model model) {
 		IDao dao = sqlSession.getMapper(IDao.class);
-		ArrayList<FreeBoardDto> fbdto = dao.listDao();
-		model.addAttribute("list",fbdto);
-			return "list";
+		  
+		String mid = request.getParameter("mid");
+		MemberDto dto =dao.memberInfoDao(mid);
+
+	  	
+		model.addAttribute("minfo",dto);
+		
+		
+		return "member_list";
 	}
+	@RequestMapping(value = "member_delete")
+	public String member_delete(HttpServletRequest request) {
+		IDao dao = sqlSession.getMapper(IDao.class);
+		String mid = request.getParameter("mid");
+		dao.member_deleteDao(mid);
+		return "member_delete";
+	}
+	
+	@RequestMapping(value = "list")
+	public String list( Model model, HttpServletRequest request) {
+		IDao dao = sqlSession.getMapper(IDao.class);
+		ArrayList<FreeBoardDto> boardDtos = dao.listDao();
+		
+		HttpSession session = request.getSession();
+		
+		String sid = (String)session.getAttribute("sessionId");
+		if(sid !=null) {
+		
+		MemberDto dto =  dao.memberInfoDao(sid);
+		String mid =dto.getMid();
+		model.addAttribute("mid",mid);
+		}
+		model.addAttribute("boardSum",boardDtos.size());
+		model.addAttribute("list",boardDtos);
+		
+		
+		return "list";
+	}
+	@RequestMapping(value = "content_view")
+	public String content_view(HttpServletRequest request,Model model) {
+		IDao dao = sqlSession.getMapper(IDao.class);
+		String fnum = request.getParameter("fnum");
+		FreeBoardDto dto = dao.content_viewDao(fnum);
+		HttpSession session = request.getSession(); //현재 세션 가져오기
+		
+		String sid = session.getAttribute("sessionId").toString();
+		
+		String fid = dto.getFid();//현재 보고있는 글을 쓴 아이디
+		
+		
+		int idflag = 0;
+		if((sid != fid)&&(sid.equals(fid))) {
+			idflag = 1;
+		}
+			model.addAttribute("idflag",idflag);//idflag = 1이면 수정 삭제 권한 설정
+		
+	
+		
+		dao.hitDao(fnum);
+		
+	  	
+		model.addAttribute("fbdto",dto);
+		
+		
+		return "content_view";
+	}
+	
+	@RequestMapping(value = "delete")
+	public String delete(HttpServletRequest request) {
+		IDao dao = sqlSession.getMapper(IDao.class);
+		String fnum = request.getParameter("fnum");
+		dao.deleteDao(fnum);
+		return "redirect:list";
+	}
+	
+	@RequestMapping(value = "modify")
+	public String modify(HttpServletRequest request,Model model) {
+		IDao dao = sqlSession.getMapper(IDao.class);
+		String fnum = request.getParameter("fnum");
+		String ftitle = request.getParameter("ftitle");
+		String fcontent = request.getParameter("fcontent");
+		dao.modifyDao(fnum, ftitle, fcontent);
+		
+		
+		
+		return "redirect:list";
+	}
+	
+	@RequestMapping(value = "modify_view")
+	public String modify_view(HttpServletRequest request,Model model) {
+		IDao dao = sqlSession.getMapper(IDao.class);
+		String fnum = request.getParameter("fnum");
+		FreeBoardDto dto = dao.content_viewDao(fnum);
+		
+	  	
+		model.addAttribute("fbdto",dto);
+		
+		
+		return "modify_view";
+	}
+	
 }

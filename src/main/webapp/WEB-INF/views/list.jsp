@@ -9,6 +9,19 @@
 </head>
 <body>
 	<h2>글목록</h2>
+	<hr>
+	총 게시글 수 : ${boardSum }개 <br>
+	<%	String sid = (String)session.getAttribute("sessionId");
+		if (sid == null){
+		%>
+		<input type="button" value="로그인" onclick="javascript:window.location='login'">
+		<%	
+		}else{
+		%>
+		${mid }님 로그인중<input type="button" value="로그인" onclick="javascript:window.location='logout'">
+	<%
+	} 
+	%>
 	<table border="1" cellspacing="0" cellpadding="0" width="1000">
 		<tr bgcolor="pink" height="40">
 			<th>번호</th>
@@ -24,7 +37,9 @@
 			<td>${fbdto.fnum}</td>
 			<td>${fbdto.fid}</td>
 			<td>${fbdto.fname}</td>
-			<td>${fbdto.ftitle}</td>
+			
+			<td align="left">&nbsp;<a href="content_view?fnum=${fbdto.fnum}">${fbdto.ftitle}</a></td>
+			
 			<td>${fbdto.fhit}</td>
 			<td>${fbdto.fdate}</td>
 		</tr>

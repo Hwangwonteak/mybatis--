@@ -19,6 +19,11 @@
    	<select id="memberInfoDao" resultType="com.hwt.freeboard01.dto.MemberDto">
  		SELECT * FROM member WHERE mid=#{param1}		
    	</select>
+   	<delete id="member_deleteDao">
+ 		DELETE FROM member WHERE mid=#{param1}	
+   	</delete>
+   	
+   
    <!--게시판 관리 SQL -->
    	<insert id="writeDao">
 		INSERT INTO freeboard(fnum, fid, fname, ftitle, fcontent,fhit) 
@@ -28,5 +33,20 @@
 	<select id="listDao" resultType="com.hwt.freeboard01.dto.FreeBoardDto">
  		SELECT * FROM freeboard ORDER BY  fnum	DESC	
    	</select>
+   	
+   	<select id="content_viewDao" resultType="com.hwt.freeboard01.dto.FreeBoardDto">
+ 		SELECT * FROM freeboard WHERE fnum=#{param1}	
+   	</select>
+   	
+   	<delete id="deleteDao">
+ 		DELETE FROM freeboard WHERE fnum=#{param1}	
+   	</delete>
+   	
+   	<update id="modifyDao">
+ 		UPDATE freeboard SET  ftitle=#{param2}, fcontent=#{param3} WHERE  fnum=#{param1}
+   	</update>
+   	<update id="hitDao">
+ 		UPDATE freeboard SET fhit=fhit+1 WHERE  fnum=#{param1}
+   	</update>
    
    </mapper>
